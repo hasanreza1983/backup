@@ -1,0 +1,86 @@
+{
+    "defaultEnv": {
+        "ENV": "NODE_ENV"
+    },
+    "sql-file": true,
+    "local": {
+        "driver": "mysql",
+        "multipleStatements": true,
+        "host": {
+            "ENV": "MYSQL_SERVICE_HOST"
+        },
+        "user": {
+            "ENV": "APP_DB_USER"
+        },
+        "password": {
+            "ENV": "APP_DB_PASS"
+        },
+        "database": {
+            "ENV": "APP_DB_NAME"
+        }
+    },
+    "development": {
+        "driver": "mysql",
+        "multipleStatements": true,
+        "host": {
+            "ENV": "MYSQL_SERVICE_HOST"
+        },
+        "user": {
+            "ENV": "APP_DB_USER"
+        },
+        "password": {
+            "ENV": "APP_DB_PASS"
+        },
+        "database": {
+            "ENV": "APP_DB_NAME"
+        }
+    },
+    "testing": {
+        "driver": "mysql",
+        "multipleStatements": true,
+        "host": {
+            "ENV": "MYSQL_SERVICE_HOST"
+        },
+        "user": {
+            "ENV": "APP_DB_USER"
+        },
+        "password": {
+            "ENV": "APP_DB_PASS"
+        },
+        "database": {
+            "ENV": "APP_DB_NAME"
+        }
+    },
+    "staging": {
+        "driver": "mysql",
+        "multipleStatements": true,
+        "host": {
+            "ENV": "MYSQL_SERVICE_HOST"
+        },
+        "user": {
+            "ENV": "APP_DB_USER"
+        },
+        "password": {
+            "ENV": "APP_DB_PASS"
+        },
+        "database": {
+            "ENV": "APP_DB_NAME"
+        }
+    },
+    "production": {
+        "driver": "mysql",
+        "multipleStatements": true,
+        "host": {
+            "ENV": "MYSQL_SERVICE_HOST"
+        },
+        "user": {
+            "ENV": "APP_DB_USER"
+        },
+        "password": {
+            "ENV": "APP_DB_PASS"
+        },
+        "database": {
+            "ENV": "APP_DB_NAME"
+        }
+    }
+}
