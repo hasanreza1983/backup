@@ -8,11 +8,13 @@ module.exports = function (sequelize, DataTypes) {
     const Lead = sequelize.define('Lead', {
         id: {
             type: DataTypes.INTEGER(11),
+            allowNull: false,
             primaryKey: true,
             autoIncrement: true
         },
         owner: {
-            type: DataTypes.INTEGER(11)
+            type: DataTypes.INTEGER(11),
+            allowNull: false
         },
         id_crm_lead_contact_parent: {
             type: DataTypes.INTEGER(11),
@@ -22,11 +24,11 @@ module.exports = function (sequelize, DataTypes) {
             }
         },
         company_name: {
-            type: DataTypes.STRING(255)
+            type: DataTypes.STRING(255),
+            allowNull: false
         },
         id_crm_lead_status_master: {
             type: DataTypes.INTEGER(11),
-            allowNull: true,
             references: {
                 model: 'LeadStatusMaster',
                 key: 'id'
@@ -34,23 +36,21 @@ module.exports = function (sequelize, DataTypes) {
         },
         id_crm_rating_master: {
             type: DataTypes.INTEGER(11),
-            allowNull: true,
             references: {
                 model: 'RatingMaster',
                 key: 'id'
             }
         },
         no_of_employees: {
-            type: DataTypes.INTEGER(11),
+            type: DataTypes.INTEGER(5),
             allowNull: true
         },
         annual_revenue: {
-            type: DataTypes.INTEGER(11),
+            type: DataTypes.DECIMAL(20, 2),
             allowNull: true
         },
         id_crm_industry_master: {
             type: DataTypes.INTEGER(11),
-            allowNull: true,
             references: {
                 model: 'IndustryMaster',
                 key: 'id'
@@ -63,18 +63,48 @@ module.exports = function (sequelize, DataTypes) {
                 key: 'id'
             }
         },
+        fax: {
+            type: DataTypes.STRING(50),
+            allowNull: true
+        },
+        website: {
+            type: DataTypes.STRING(100),
+            allowNull: true
+        },
+        skype_url: {
+            type: DataTypes.STRING(50),
+            allowNull: true
+        },
+        twitter_url: {
+            type: DataTypes.STRING(100),
+            allowNull: true
+        },
+        linkedin_url: {
+            type: DataTypes.STRING(100),
+            allowNull: true
+        },
+        facebook_url: {
+            type: DataTypes.STRING(100),
+            allowNull: true
+        },
         is_lead_converted: {
-            type: DataTypes.TINYINT(1)
+            type: DataTypes.TINYINT(1),
+            allowNull: false,
+            defaultValue: '0'
         },
         is_deleted: {
-            type: DataTypes.TINYINT(1)
+            type: DataTypes.TINYINT(1),
+            allowNull: false,
+            defaultValue: '0'
         },
         created_at: {
             type: DataTypes.DATE,
+            allowNull: false,
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
         },
         updated_at: {
             type: DataTypes.DATE,
+            allowNull: false,
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
         },
         deleted_at: {
@@ -82,7 +112,8 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: true
         },
         created_by: {
-            type: DataTypes.INTEGER(11)
+            type: DataTypes.INTEGER(11),
+            allowNull: false
         },
         updated_by: {
             type: DataTypes.INTEGER(11),
@@ -139,12 +170,6 @@ module.exports = function (sequelize, DataTypes) {
             otherKey: 'id_crm_address'
         });
 
-        Lead.hasMany(models.LeadNote, {
-            foreignKey: {
-                name: 'id_crm_lead'
-            }
-        });
-  
         Lead.belongsToMany(models.Campaign, {
             through: {
                 model: models.CampaignLink,
@@ -157,7 +182,7 @@ module.exports = function (sequelize, DataTypes) {
             otherKey: 'id_crm_campaign',
             constraints: false
         });
-        
+
     }
     return Lead;
 };

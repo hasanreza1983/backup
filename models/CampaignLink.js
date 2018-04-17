@@ -7,17 +7,21 @@ module.exports = function (sequelize, DataTypes) {
     const CampaignLink = sequelize.define('CampaignLink', {
         id: {
             type: DataTypes.INTEGER(11),
+            allowNull: false,
             primaryKey: true,
             autoIncrement: true
         },
         model_name: {
-            type: DataTypes.ENUM('Lead', 'Contact')
+            type: DataTypes.ENUM('Lead', 'Contact'),
+            allowNull: false
         },
         model_id: {
-            type: DataTypes.INTEGER(11)
+            type: DataTypes.INTEGER(11),
+            allowNull: false
         },
         id_crm_campaign: {
             type: DataTypes.INTEGER(11),
+            allowNull: false,
             references: {
                 model: 'Campaign',
                 key: 'id'
@@ -33,7 +37,7 @@ module.exports = function (sequelize, DataTypes) {
         }
     }, {
             tableName: 'crm_campaign_link'
-        });
+        });;
 
     CampaignLink.associate = (models) => {
         CampaignLink.belongsTo(models.Campaign, {

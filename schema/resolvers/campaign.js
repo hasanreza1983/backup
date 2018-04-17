@@ -3,7 +3,6 @@
  * Hasan Reza 2018-04-05;
  *
  */
-
 const model = require('../../models');
 const validation = require('../../validation/campaignValidation');
 const common = require('../../lib/commonResolver');
@@ -49,9 +48,10 @@ module.exports = {
 
             const response = await common.getCrmModelListByPage(args, model.Campaign, [
                 { model: model.CampaignTypeMaster }
-            ], 'Campaign');
+            ], 'Campaigns');
 
             return response;
+
         } // end of getAllCrmCampaignList resolver
 
     }, // end of query
@@ -87,18 +87,16 @@ module.exports = {
                 const objCrmCampaign = await model.Campaign.findOrCreate(filter)
                     .spread((result, is_created) => {
                         if (is_created) {
-                            message = "The create was successful";
                             return result.dataValues;
                         } else {
                             return result.updateAttributes(args.input).then(function (updated) {
-                                message = "The update was successful";
                                 return updated;
                             });
                         }
                     });
 
-                objCrmCampaign.Campaign = objCrmCampaign;
-                objCrmCampaign.message = message;
+                //  objCrmCampaign.Campaign = objCrmCampaign;
+                objCrmCampaign.message = constant.SUCCESS;
                 return objCrmCampaign;
 
             }
@@ -129,6 +127,7 @@ module.exports = {
                         is_deleted: 0
                     }
                 });
+
                 if (objCrmCampaign) {
                     let isUpdated = await model.Campaign.update(args.input, {
                         where: {
@@ -136,16 +135,14 @@ module.exports = {
                             is_deleted: 0
                         }
                     });
-                    if (isUpdated) {
-                        message = "The update was successful with ID " + args.input.id;
-                    }
+
                 } else {
-                    throw new Error("ID does not exist!");
+                    throw new Error(constant.DOES_NOT_EXIST);
                 }
             }
 
-            objCrmCampaign.Campaign = objCrmCampaign;
-            objCrmCampaign.message = message;
+            //  objCrmCampaign.Campaign = objCrmCampaign;
+            objCrmCampaign.message = constant.SUCCESS;
             return objCrmCampaign;
 
         }, // end of  updateCrmCampaign resolver

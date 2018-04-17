@@ -7,9 +7,9 @@
 
 module.exports = function (sequelize, DataTypes) {
     const LeadAddress = sequelize.define('LeadAddress', {
-        
         id_crm_lead: {
-            type: DataTypes.TINYINT(11),
+            type: DataTypes.INTEGER(11),
+            allowNull: false,
             references: {
                 model: 'Lead',
                 key: 'id'
@@ -17,6 +17,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         id_crm_address: {
             type: DataTypes.INTEGER(11),
+            allowNull: false,
             references: {
                 model: 'Address',
                 key: 'id'

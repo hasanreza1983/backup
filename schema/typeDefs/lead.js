@@ -18,6 +18,12 @@ type CrmLead {
 	annual_revenue: Int
 	id_crm_industry_master: Int
 	id_crm_pipeline_stage:  Int
+	fax: String
+	website: String
+	skype_url: String
+	twitter_url: String
+	linkedin_url: String
+	facebook_url: String
 	is_lead_converted: Boolean
 	created_by: Int
 	updated_by: Int
@@ -41,6 +47,12 @@ input CrmLeadInput {
 	annual_revenue: Int
 	id_crm_industry_master: Int
 	id_crm_pipeline_stage:  Int
+	fax: String
+	website: String
+	skype_url: String
+	twitter_url: String
+	linkedin_url: String
+	facebook_url: String
 	id_crm_lead_contact_parent: Int
 	LeadContactParent: CrmLeadContactParentInput
 	Addresses: [CrmAddressInput]	
@@ -67,5 +79,6 @@ type Mutation {
     createCrmLead(input: CrmLeadInput!): CrmLeadOutput
     updateCrmLead(input: CrmLeadInput!): CrmLeadOutput
 	deleteCrmLeadById(id: [Int!]!): CrmDeleteListOutput	
+	convertCrmLeadById(id: Int!): CrmLeadOutput
 }
 `;

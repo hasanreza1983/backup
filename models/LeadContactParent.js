@@ -9,25 +9,24 @@ module.exports = function (sequelize, DataTypes) {
     const LeadContactParent = sequelize.define('LeadContactParent', {
         id: {
             type: DataTypes.INTEGER(11),
+            allowNull: false,
             primaryKey: true,
             autoIncrement: true
         },
-        salutation: {
-            type: DataTypes.STRING(10),
-            allowNull: true
-        },
         first_name: {
-            type: DataTypes.STRING(100)
+            type: DataTypes.STRING(100),
+            allowNull: false
         },
         last_name: {
-            type: DataTypes.STRING(100)
+            type: DataTypes.STRING(100),
+            allowNull: true
         },
         title: {
             type: DataTypes.STRING(100),
             allowNull: true
         },
         designation: {
-            type: DataTypes.STRING(20),
+            type: DataTypes.STRING(100),
             allowNull: true
         },
         phone: {
@@ -43,30 +42,6 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: true
         },
         secondary_email: {
-            type: DataTypes.STRING(100),
-            allowNull: true
-        },
-        fax: {
-            type: DataTypes.STRING(50),
-            allowNull: true
-        },
-        website: {
-            type: DataTypes.STRING(100),
-            allowNull: true
-        },
-        skype_url: {
-            type: DataTypes.STRING(100),
-            allowNull: true
-        },
-        twitter_url: {
-            type: DataTypes.STRING(100),
-            allowNull: true
-        },
-        linkedin_url: {
-            type: DataTypes.STRING(100),
-            allowNull: true
-        },
-        facebook_url: {
             type: DataTypes.STRING(100),
             allowNull: true
         },
@@ -97,9 +72,7 @@ module.exports = function (sequelize, DataTypes) {
                 name: 'id_crm_lead_source_master',
                 allowNull: true
             }, onDelete: 'CASCADE'
-        });        
+        });
     }
-
     return LeadContactParent;
-    
 };

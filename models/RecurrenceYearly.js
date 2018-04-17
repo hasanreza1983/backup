@@ -5,17 +5,17 @@
  *
  */
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
     const RecurrenceYearly = sequelize.define('RecurrenceYearly', {
         id: {
             type: DataTypes.INTEGER(11),
-		    primaryKey: true,
+            primaryKey: true,
             autoIncrement: true
         },
         id_crm_activity_task: {
             type: DataTypes.INTEGER(11),
             allowNull: false,
-		    references: {
+            references: {
                 model: 'ActivityTask',
                 key: 'id'
             }
@@ -26,10 +26,10 @@ module.exports = function(sequelize, DataTypes) {
         },
         yearly_option: {
             type: DataTypes.ENUM('monthly', 'weekly'),
-		    allowNull: true
+            allowNull: true
         },
         yearly_on_month: {
-            type: DataTypes.ENUM('january','february','march','april','may','june','july','august','september','october','november','december'),
+            type: DataTypes.ENUM('january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'),
             allowNull: true
         },
         yearly_on_month_day: {
@@ -41,11 +41,11 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: true
         },
         yearly_day_of_week: {
-            type: DataTypes.ENUM('day','weekday','weekend day','sunday','monday','tuesday','wednesday','thursday','friday','saturday'),
+            type: DataTypes.ENUM('day', 'weekday', 'weekend day', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'),
             allowNull: true
         },
         yearly_of_every_month: {
-            type: DataTypes.ENUM('january','february','march','april','may','june','july','august','september','october','november','december'),
+            type: DataTypes.ENUM('january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'),
             allowNull: true
         },
         is_deleted: {
@@ -53,12 +53,12 @@ module.exports = function(sequelize, DataTypes) {
         },
         deleted_at: {
             type: DataTypes.DATE,
-		    allowNull: true
+            allowNull: true
         }
     },
-    {
-        tableName: 'crm_recurrence_yearly'
-    });
+        {
+            tableName: 'crm_recurrence_yearly'
+        });
 
     return RecurrenceYearly;
 };

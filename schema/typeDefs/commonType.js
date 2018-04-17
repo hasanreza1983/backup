@@ -18,8 +18,8 @@ type PageInfo {
 input PageInfoInput {
     currentPage: Int = 1,
     pageSize: Int = 10,
-    sortField: String = "id",
-    sortDirection: String = "ASC",
+    sortField: String = "created_at",
+    sortDirection: String = "DESC",
     filterField: String = "",
     filterValue: String = "" ,
     whereConditions: String = ""
@@ -48,14 +48,24 @@ type CrmDeleteListOutput {
     id: [Int],
     message: String
 }
-input CrmCampaignsToModelInput {
+input CrmCampaignsAssignInput {
+    id: Int
 	model_name: String!
-	model_id: Int!
-	id_crm_campaign: Int!	
-	id_crm_campaign_status_master: Int!	
+    model_id: Int!
+    id_crm_campaign_status_master: Int!	
+    Campaigns: [Int!]!
 }
+
+input CrmCampaignAssignAlterInput {
+    id: Int!
+	model_name: String!
+    model_id: Int! 
+    id_crm_campaign_status_master: Int  
+}
+
 type Mutation {
-    assignCrmCampaignsToModel(input: [CrmCampaignsToModelInput]!): CrmDefaultOutput
-    updateCrmCampaignStatusForModel(input: [CrmCampaignsToModelInput]!): CrmDefaultOutput
+    assignCrmCampaignsToModel(input: CrmCampaignsAssignInput!): CrmDefaultOutput
+    unAssignCrmCampaignsToModel(input: CrmCampaignAssignAlterInput!): CrmDefaultOutput
+    updateCrmCampaignStatusForModel(input: CrmCampaignAssignAlterInput!): CrmDefaultOutput
 }
 `;

@@ -15,9 +15,7 @@ input CrmLeadSourceMasterInput {
 	source: String,
 	weight: Int
 }
-
 type Query {
     getCrmLeadSourceMasterList: [CrmLeadSourceMaster]
 }
-
 `;

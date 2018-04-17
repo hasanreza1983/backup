@@ -9,6 +9,7 @@ module.exports = function (sequelize, DataTypes) {
     const Deal = sequelize.define('Deal', {
         id: {
             type: DataTypes.INTEGER(11),
+            allowNull: false,
             primaryKey: true,
             autoIncrement: true
         },
@@ -18,6 +19,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         id_crm_contact: {
             type: DataTypes.INTEGER(11),
+            allowNull: true,
             references: {
                 model: 'Contact',
                 key: 'id'
@@ -32,20 +34,24 @@ module.exports = function (sequelize, DataTypes) {
             }
         },
         deal_name: {
-            type: DataTypes.STRING(100)
+            type: DataTypes.STRING(100),
+            allowNull: false
         },
         deal_type: {
             type: DataTypes.ENUM('none', 'existing_business', 'new_business'),
             allowNull: true
         },
         deal_closing_date: {
-            type: DataTypes.DATE
+            type: DataTypes.DATE,
+            allowNull: false
         },
         deal_amount: {
-            type: DataTypes.STRING(20)
+            type: DataTypes.DECIMAL(20, 2),
+            allowNull: true
         },
         expected_revenue: {
-            type: DataTypes.STRING(20)
+            type: DataTypes.DECIMAL(20, 2),
+            allowNull: true
         },
         id_crm_lead_source_master: {
             type: DataTypes.INTEGER(11),
@@ -80,18 +86,34 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: true
         },
         is_deleted: {
-            type: DataTypes.TINYINT(1)
+            type: DataTypes.TINYINT(1),
+            allowNull: false,
+            defaultValue: '0'
         },
         created_at: {
             type: DataTypes.DATE,
+            allowNull: true,
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
         },
         updated_at: {
             type: DataTypes.DATE,
+            allowNull: true,
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
         },
         deleted_at: {
             type: DataTypes.DATE,
+            allowNull: true
+        },
+        created_by: {
+            type: DataTypes.INTEGER(11),
+            allowNull: false
+        },
+        updated_by: {
+            type: DataTypes.INTEGER(11),
+            allowNull: true
+        },
+        deleted_by: {
+            type: DataTypes.INTEGER(11),
             allowNull: true
         }
     }, {
@@ -137,7 +159,7 @@ module.exports = function (sequelize, DataTypes) {
                 allowNull: true
             }, onDelete: 'CASCADE'
         });
-        
+
         Deal.hasMany(models.ModelNote, {
             foreignKey: 'model_id',
             constraints: false,

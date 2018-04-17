@@ -9,16 +9,16 @@ module.exports = function (sequelize, DataTypes) {
     const Address = sequelize.define('Address', {
         id: {
             type: DataTypes.INTEGER(11),
+            allowNull: false,
             primaryKey: true,
             autoIncrement: true
         },
         address_type: {
-            type: DataTypes.ENUM('Default', 'Mailing', 'Billing', 'Shipping', 'Others'),
-            allowNull: true,
-            defaultValue: 'Default'
+            type: DataTypes.ENUM('default', 'mailing', 'billing', 'shipping', 'others'),
+            allowNull: true
         },
         street: {
-            type: DataTypes.STRING(255),
+            type: DataTypes.TEXT,
             allowNull: true
         },
         city: {
@@ -40,5 +40,6 @@ module.exports = function (sequelize, DataTypes) {
     }, {
             tableName: 'crm_address'
         });
+
     return Address;
 };

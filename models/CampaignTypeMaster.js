@@ -5,26 +5,29 @@
  *
  */
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
     const CampaignTypeMaster = sequelize.define('CampaignTypeMaster', {
         id: {
             type: DataTypes.INTEGER(11),
-		    primaryKey: true,
+            allowNull: false,
+            primaryKey: true,
             autoIncrement: true
-        },			
+        },
         campaign_type: {
-            type: DataTypes.STRING(50)
-        },			
+            type: DataTypes.STRING(50),
+            allowNull: false
+        },
         weight: {
-            type: DataTypes.TINYINT(2)
+            type: DataTypes.TINYINT(2),
+            allowNull: false
         }
     }, {
             tableName: 'crm_campaign_type_master'
         });
 
     CampaignTypeMaster.associate = (models) => {
-        
-        
+
+
     }
     return CampaignTypeMaster;
 };

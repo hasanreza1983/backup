@@ -5,33 +5,36 @@
  *
  */
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
     const Pipeline = sequelize.define('Pipeline', {
         id: {
             type: DataTypes.TINYINT(2),
-		    primaryKey: true,
+            allowNull: false,
+            primaryKey: true,
             autoIncrement: true
-        },			
+        },
         pipeline_name: {
-            type: DataTypes.STRING(255)
-        },			
+            type: DataTypes.STRING(255),
+            allowNull: false
+        },
         is_active: {
             type: DataTypes.TINYINT(1),
-		    defaultValue:  1
+            allowNull: false,
+            defaultValue: 1
         }
     }, {
             tableName: 'crm_pipeline'
         });
 
-        Pipeline.associate = (models) => {
-        
-            Pipeline.hasMany(models.PipelineStage, {
+    Pipeline.associate = (models) => {
+
+        Pipeline.hasMany(models.PipelineStage, {
             foreignKey: {
                 name: 'id_crm_pipeline',
                 allowNull: true
             }, onDelete: 'CASCADE'
         });
-		
+
     }
     return Pipeline;
 };

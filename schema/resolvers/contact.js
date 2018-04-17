@@ -9,7 +9,8 @@ const model = require('../../models');
 const constant = require('../../lib/constant');
 const common = require('../../lib/commonResolver');
 
-const modelIncludes = [{
+const modelIncludes = [
+    {
         model: model.LeadContactParent
     },
     {
@@ -45,11 +46,11 @@ module.exports = {
         },
         getCrmContactListByPage: async (obj, args, context, info) => {
             const response = await common.getCrmModelListByPage(args, model.Contact, [{
-                    model: model.LeadContactParent
-                },
-                {
-                    model: model.Company
-                }
+                model: model.LeadContactParent
+            },
+            {
+                model: model.Company
+            }
             ], 'Contacts');
             return response;
         },
@@ -70,11 +71,25 @@ module.exports = {
                 result,
                 message: constant.SUCCESS
             }
-        }
+        },
+
+        getCrmContactCampaigns: async (obj, args, context, info) => {
+            const response = await common.getCrmModelById(args.id, model.Contact, [
+                {
+                    model: model.Campaign,
+                    include: [{
+                        model: model.CampaignTypeMaster
+                    }]
+                }
+            ], 'Contact');
+            return response;
+
+        }, // end of getCrmContactCampaigns resolver
     },
     Mutation: {
         createCrmContact: async (obj, args, context, info) => {
             args.input.created_by = context.user.id;
+
             const contactObj = await model.Contact.create(args.input, {
                 include: modelIncludes
             });

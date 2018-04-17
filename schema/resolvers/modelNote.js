@@ -14,7 +14,6 @@ const { fileStorageServerLink } = require('../../config/index').microservicesLin
 let message = '';
 module.exports = {
     Query: {
-
         getAllCrmNotesByModel: async (obj, args, context, info) => {
             let created_by = '';
             if (context.user.id) {
@@ -35,8 +34,8 @@ module.exports = {
 
             // start of Minio operation
             let miniosFileIds = [];
-            objModel.ModelNotes.map((objModelNote, index) => {
-                for (let [key, attachment] of Object.entries(objModel.ModelNotes[index].ModelNoteAttachments)) {
+            objModel.map((objModelNote, index) => {
+                for (let [key, attachment] of Object.entries(objModelNote.ModelNoteAttachments)) {
                     miniosFileIds.push(attachment.dataValues.minio_file_id);
                 }
             });
@@ -55,15 +54,14 @@ module.exports = {
                 arrFileIds = attachmentFilesUrl.data.fileIds;
             }
 
-            objModel.ModelNotes.map((objModelNote, index) => {
-                for (let [key, attachment] of Object.entries(objModel.ModelNotes[index].ModelNoteAttachments)) {
+            objModel.map((objModelNote, index) => {
+                for (let [key, attachment] of Object.entries(objModelNote.dataValues.ModelNoteAttachments)) {
                     objModel.ModelNotes[index].ModelNoteAttachments[key].minio_file_id = attachment.dataValues.minio_file_id;
-                    objModel.ModelNotes[index].ModelNoteAttachments[key].minio_file_url = attachment.dataValues.minio_file_url;
-                    //objModel.ModelNotes[index].ModelNoteAttachments[key].minio_file_url = arrFileIds[attachment.dataValues.minio_file_id];
+                    objModel.ModelNotes[index].ModelNoteAttachments[key].minio_file_url = arrFileIds[attachment.dataValues.minio_file_id];
                 }
             });
-
             // End of Minio operation
+
             return objModel;
 
         }, // end of getAllCrmModelNote resolver
@@ -89,31 +87,14 @@ module.exports = {
                 throw new Error(arrErrors.error.details[0].message);
             } else {
 
-                let filter = {
-                    include: [{ model: model.ModelNoteAttachment }],
-                    where: {
-                        id: args.input.id,
-                        created_by: created_by,
-                        is_deleted: 0
-                    },
-                    defaults: args.input
-                };
-
-                const objModelNote = await model.ModelNote.findOrCreate(filter)
-                    .spread((result, is_created) => {
-                        if (is_created) {
-                            message = "The note is created successfully";
-                            return result.dataValues;
-                        } else {
-                            return result.updateAttributes(args.input).then(function (updated) {
-                                message = "The update was successful";
-                                return updated;
-                            });
-                        }
-                    });
+                const objModelNote = await model.ModelNote.create(args.input, {
+                    include: [
+                        { model: model.ModelNoteAttachment }
+                    ]
+                });
 
                 objModelNote.ModelNote = objModelNote;
-                objModelNote.message = message;
+                objModelNote.message = "The create was successful";
                 return objModelNote;
 
             }
@@ -139,7 +120,8 @@ module.exports = {
                 const objModelNote = await model.ModelNote.findOne({
                     where: {
                         id: args.input.id,
-                        id_crm_lead: args.input.id_crm_lead,
+                        model_name: args.input.model_name,
+                        model_id: args.input.model_id,
                         created_by: created_by,
                         is_deleted: 0
                     }
@@ -149,6 +131,8 @@ module.exports = {
                     let isUpdated = await model.ModelNote.update(args.input, {
                         where: {
                             id: args.input.id,
+                            model_name: args.input.model_name,
+                            model_id: args.input.model_id,
                             created_by: created_by,
                             is_deleted: 0
                         }
@@ -158,7 +142,7 @@ module.exports = {
                         let isCreated = args.input.ModelNoteAttachments.forEach(async (obj) => {
                             let filter = {
                                 where: {
-                                    id_crm_lead_note: args.input.id,
+                                    id_crm_model_note: args.input.id,
                                     minio_file_id: obj.minio_file_id,
                                     created_by: created_by
                                 },
@@ -192,15 +176,18 @@ module.exports = {
 
         }, // end of  updateCrmModelNote resolver
 
-        deleteCrmModelNoteById: async (obj, args, context, info) => {
+        deleteCrmModelNote: async (obj, args, context, info) => {
             // Prepare array to validate fields
-            let objModelNote = [];
-            let arrErrors = [];
-            let responseStatus = [];
+            let objModelNote = [],
+                arrErrors = [],
+                responseStatus = [],
+                created_by = '',
+                deleted_by = '',
+                message = '';
 
-            let created_by = '';
             if (context.user.id) {
                 created_by = context.user.id;
+                deleted_by = context.user.id;
             }
 
             arrErrors = validation.validateDeleteInput(args.input); // validation for CrmModelNote input data
@@ -213,58 +200,52 @@ module.exports = {
                 const objModelNote = await model.ModelNote.findOne({
                     where: {
                         id: args.input.id,
-                        id_crm_lead: args.input.id_crm_lead,
+                        model_name: args.input.model_name,
+                        model_id: args.input.model_id,
                         created_by: created_by,
                         is_deleted: 0
                     }
                 })
                 if (objModelNote) {
 
-                    /////Minio FileIds from Tables///////////////
-                    /*
-                    const objModel = await common.getCrmModelById(args.input.id_crm_lead, model.Model, [{
-                        model: model.ModelNote,
-                        include: model.ModelNoteAttachment
-                    }
-                    ], 'Models');
-
-                    objModel.ModelNotes = objModel.Models.dataValues.ModelNotes;
-
-                    // start of Minio operation
-                    let miniosFileIds = [];
-                    objModel.ModelNotes.map((objModelNote, index) => {
-                        for (let [key, attachment] of Object.entries(objModel.ModelNotes[index].ModelNoteAttachments)) {
-                            miniosFileIds.push(attachment.dataValues.minio_file_id);
-                        }
-                    });
-
-                    console.log(miniosFileIds);
-                   */
-
-                    ////////////////////////////////////////////
-
                     let isCrmModelNoteSoftDeleted = await model.ModelNote.update({
                         deleted_at: new Date(),
-                        is_deleted: 1
+                        is_deleted: 1,
+                        deleted_by: deleted_by
                     }, {
                             where: {
                                 id: args.input.id,
-                                id_crm_lead: args.input.id_crm_lead,
+                                model_name: args.input.model_name,
+                                model_id: args.input.model_id,
                                 created_by: created_by,
                                 is_deleted: 0
                             }
                         });
 
                     if (isCrmModelNoteSoftDeleted) {
+                        {
+                            let isUpdated = await model.ModelNoteAttachment.update({
+                                deleted_at: new Date(),
+                                is_deleted: 1,
+                                deleted_by: deleted_by
 
-                        //const objDeleteMinio = await common.deleteMinioFileById(miniosFileIds);
-                        message = '';
-                        // if (objDeleteMinio.message) {  
+                            }, {
+                                    where: {
+                                        id_crm_model_note: args.input.id,
+                                        created_by: created_by,
+                                        is_deleted: 0
+                                    }
+                                });
+
+                            //const objDeleteMinio = await common.deleteMinioFileById(miniosFileIds);
+                            // if (objDeleteMinio.message) {  
+
+                            //  }
+                        }
                         message = "The delete was successful with the ID " + args.id;
-                        //  }
+                    } else {
+                        throw new Error(" CrmModelNote ID does not exist");
                     }
-                } else {
-                    throw new Error(" CrmModelNote ID does not exist");
                 }
             }
             objModelNote.ModelNote = objModelNote;

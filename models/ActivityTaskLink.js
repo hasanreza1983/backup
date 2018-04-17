@@ -12,8 +12,7 @@ module.exports = function (sequelize, DataTypes) {
             autoIncrement: true
         },
         id_crm_activity_task: {
-            type: DataTypes.INTEGER(11),
-            allowNull: false,
+            type: DataTypes.INTEGER(11),    
             references: {
                 model: 'ActivityTask',
                 key: 'id'

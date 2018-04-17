@@ -17,8 +17,9 @@ const validateIDInput = (inputID) => {
 }
 
 let schemaCreateInput = Joi.object().keys({
-	id_crm_lead: Joi.number().integer().required(),
-	note_title: Joi.string(),
+	model_name: Joi.string().valid('Lead', 'Contact', 'Company', 'Deal', 'Campaign'),
+	model_id: Joi.number().integer().required(),
+	note_title: Joi.string().required(),
 	note_description: Joi.string().required(),
 	created_by: Joi.number().integer().required(),
 
@@ -37,8 +38,9 @@ const validateCreateInput = (inputArguments) => {
 
 let schemaUpdateInput = Joi.object().keys({
 	id: Joi.number().integer().required(),
-	id_crm_lead: Joi.number().integer().required(),
-	note_title: Joi.string(),
+	model_name: Joi.string().valid('Lead', 'Contact', 'Company', 'Deal', 'Campaign'),
+	model_id: Joi.number().integer().required(),
+	note_title: Joi.string().required(),
 	note_description: Joi.string().required(),
 	updated_by: Joi.number().integer().required(),
 
@@ -60,7 +62,8 @@ const validateUpdateInput = (inputArguments) => {
 
 let schemaDeleteInput = Joi.object().keys({
 	id: Joi.number().integer().required(),
-	id_crm_lead: Joi.number().integer().required()
+	model_name: Joi.string().valid('Lead', 'Contact', 'Company', 'Deal', 'Campaign'),
+	model_id: Joi.number().integer().required(),
 		
 });
 

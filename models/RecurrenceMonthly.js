@@ -5,24 +5,24 @@
  *
  */
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
     const RecurrenceMonthly = sequelize.define('RecurrenceMonthly', {
         id: {
             type: DataTypes.INTEGER(11),
-		    primaryKey: true,
+            primaryKey: true,
             autoIncrement: true
         },
         id_crm_activity_task: {
             type: DataTypes.INTEGER(11),
             allowNull: false,
-		    references: {
+            references: {
                 model: 'ActivityTask',
                 key: 'id'
             }
         },
         monthly_option: {
             type: DataTypes.ENUM('day', 'weekly'),
-		    allowNull: true
+            allowNull: true
         },
         monthly_day: {
             type: DataTypes.INTEGER(11),
@@ -49,12 +49,12 @@ module.exports = function(sequelize, DataTypes) {
         },
         deleted_at: {
             type: DataTypes.DATE,
-		    allowNull: true
+            allowNull: true
         }
     },
-    {
-        tableName: 'crm_recurrence_monthly'
-    });
+        {
+            tableName: 'crm_recurrence_monthly'
+        });
 
     return RecurrenceMonthly;
 };

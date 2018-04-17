@@ -5,25 +5,28 @@
  *
  */
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
     const IndustryMaster = sequelize.define('IndustryMaster', {
         id: {
             type: DataTypes.INTEGER(11),
-		    primaryKey: true,
+            allowNull: false,
+            primaryKey: true,
             autoIncrement: true
-        },			
+        },
         industry_name: {
-            type: DataTypes.STRING(50)
-        },			
+            type: DataTypes.STRING(50),
+            allowNull: false
+        },
         weight: {
-            type: DataTypes.TINYINT(2)
+            type: DataTypes.TINYINT(2),
+            allowNull: false
         }
     }, {
             tableName: 'crm_industry_master'
         });
 
     IndustryMaster.associate = (models) => {
-        
+
         IndustryMaster.hasMany(models.Company, {
             foreignKey: {
                 name: 'id_crm_industry_master',
@@ -31,12 +34,12 @@ module.exports = function(sequelize, DataTypes) {
             }, onDelete: 'CASCADE'
         });
 
-		IndustryMaster.hasMany(models.Lead, {
+        IndustryMaster.hasMany(models.Lead, {
             foreignKey: {
                 name: 'id_crm_industry_master',
                 allowNull: true
             }, onDelete: 'CASCADE'
-        });		
+        });
     }
     return IndustryMaster;
 };

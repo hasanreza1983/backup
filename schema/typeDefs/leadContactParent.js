@@ -6,8 +6,7 @@
  */
 
 module.exports = `
-type CrmLeadContactParent {
-	salutation: String
+type CrmLeadContactParent {	
 	first_name: String
 	last_name: String
 	title: String
@@ -16,19 +15,12 @@ type CrmLeadContactParent {
 	mobile: String
 	email: String
 	secondary_email: String
-	fax: String
-	website: String
-	skype_url: String
-	twitter_url: String
-	linkedin_url: String
-	facebook_url: String
 	description: String
 	id_crm_lead_source_master: Int
 	is_lead: Boolean
 	LeadSourceMaster: CrmLeadSourceMaster
 }
-input CrmLeadContactParentInput {
-	salutation: String
+input CrmLeadContactParentInput {	
 	first_name: String
 	last_name: String
 	title: String
@@ -37,12 +29,6 @@ input CrmLeadContactParentInput {
 	mobile: String
 	email: String
 	secondary_email: String
-	fax: String
-	website: String
-	skype_url: String
-	twitter_url: String
-	linkedin_url: String
-	facebook_url: String
 	description: String
 	id_crm_lead_source_master: Int
 	is_lead: Boolean	

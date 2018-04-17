@@ -8,23 +8,25 @@ module.exports = function (sequelize, DataTypes) {
     const Company = sequelize.define('Company', {
         id: {
             type: DataTypes.INTEGER(11),
+            allowNull: false,
             primaryKey: true,
             autoIncrement: true
         },
         owner: {
             type: DataTypes.INTEGER(11),
-            allowNull: true
+            allowNull: false
         },
         id_crm_company_status_master: {
             type: DataTypes.TINYINT(3),
+            allowNull: true,
             references: {
                 model: 'CompanyStatusMaster',
                 key: 'id'
             }
         },
         company_name: {
-            type: DataTypes.STRING(255),
-            allowNull: true
+            type: DataTypes.STRING(100),
+            allowNull: false
         },
         registration_number: {
             type: DataTypes.STRING(50),
@@ -99,14 +101,19 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: true
         },
         is_deleted: {
-            type: DataTypes.TINYINT(1)
+            type: DataTypes.TINYINT(1),
+            allowNull: false,
+            defaultValue: '0'
+
         },
         created_at: {
             type: DataTypes.DATE,
+            allowNull: false,
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
         },
         updated_at: {
             type: DataTypes.DATE,
+            allowNull: false,
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
         },
         deleted_at: {
@@ -114,7 +121,8 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: true
         },
         created_by: {
-            type: DataTypes.INTEGER(11)
+            type: DataTypes.INTEGER(11),
+            allowNull: false
         },
         updated_by: {
             type: DataTypes.INTEGER(11),
@@ -125,9 +133,8 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: true
         }
     }, {
-        tableName: 'crm_company'
-    });
-
+            tableName: 'crm_company'
+        });
     Company.associate = (models) => {
         Company.belongsToMany(models.Address, {
             through: models.CompanyAddress,

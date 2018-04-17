@@ -5,14 +5,18 @@
  *
  */
 
-module.exports=`
+module.exports = `
 type CrmModelNote {
 	id: Int
 	model_name: String
 	model_id: Int
 	note_title: String
     note_description: String
-    ModelNoteAttachements : [CrmModelNoteAttachment]
+    created_at: String
+    created_by: Int
+    updated_at: String
+	updated_by: Int
+    ModelNoteAttachments : [CrmModelNoteAttachment]
 }
 input CrmModelNoteInput {
 	id: Int
@@ -20,10 +24,10 @@ input CrmModelNoteInput {
 	model_id: Int
 	note_title: String
     note_description: String
-    ModelNoteAttachements : [CrmModelNoteAttachmentInput]
+    ModelNoteAttachments : [CrmModelNoteAttachmentInput]
 }
 
-input CrmModelNotesGetInput {
+input CrmModelNotesInput {
 	id: Int
 	model_name: String!
 	model_id: Int!   
@@ -41,15 +45,12 @@ type CrmModelNoteListOutput {
 }
 
 type Query {
-    getCrmModelNoteById(id: Int!): CrmModelNoteOutput
-    getCrmModelNoteListByPage(input: PageInfoInput): CrmModelNoteListOutput
-    getAllCrmNotesByModel(input: CrmModelNotesGetInput! ): CrmModelNoteListOutput
+    getAllCrmNotesByModel(input: CrmModelNoteInput! ): CrmModelNoteListOutput
 }
 
 type Mutation {
     createCrmModelNote(input: CrmModelNoteInput!): CrmModelNoteOutput
     updateCrmModelNote(input: CrmModelNoteInput!): CrmModelNoteOutput
-    deleteCrmModelNoteById(id: Int!): CrmModelNoteOutput
+    deleteCrmModelNote(input: CrmModelNoteInput!): CrmModelNoteOutput
 }
-
 `;

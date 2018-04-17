@@ -6,12 +6,12 @@
 */
 const Joi = require('joi');
 
-let schemaCampaignAssignmentInput = Joi.array().items(Joi.object().keys({
+let schemaCampaignAssignmentInput = Joi.object().keys({
 	model_name: Joi.string().valid('Lead', 'Contact'),
 	model_id: Joi.number().integer().required(),
-	id_crm_campaign: Joi.number().integer().required(),
-	id_crm_campaign_status_master: Joi.number().integer().required()
-}));
+	id_crm_campaign_status_master: Joi.number().integer().required(),
+	Campaigns: Joi.array().items(Joi.number().required())
+});
 
 // function to validate schemaCampaignAssignmentInput
 const validateCampaignAssignmentInput = (inputArguments) => {
@@ -19,6 +19,36 @@ const validateCampaignAssignmentInput = (inputArguments) => {
 		abortEarly: true
 	});
 }
+
+let schemaCampaignAssignmentUpdateInput = Joi.object().keys({
+	id: Joi.number().integer().required(),
+	model_name: Joi.string().valid('Lead', 'Contact'),
+	model_id: Joi.number().integer().required(),
+	id_crm_campaign_status_master: Joi.number().integer().required()	
+});
+
+// function to validate schemaCampaignAssignmentUpdateInput
+const validateCampaignAssignmentUpdateInput = (inputArguments) => {
+	return Joi.validate(inputArguments, schemaCampaignAssignmentUpdateInput, {
+		abortEarly: true
+	});
+}
+
+let schemaCampaignUnAssignmentInput = Joi.object().keys({
+	id: Joi.number().integer().required(),
+	model_name: Joi.string().valid('Lead', 'Contact'),
+	model_id: Joi.number().integer().required()
+});
+
+// function to validate schemaCampaignUnAssignmentInput
+const validateCampaignUnAssignmentInput = (inputArguments) => {
+	return Joi.validate(inputArguments, schemaCampaignUnAssignmentInput, {
+		abortEarly: true
+	});
+}
+
 module.exports = {
-	validateCampaignAssignmentInput
+	validateCampaignAssignmentInput,
+	validateCampaignAssignmentUpdateInput,
+	validateCampaignUnAssignmentInput
 }

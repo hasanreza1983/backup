@@ -55,7 +55,7 @@ module.exports = {
     },
     Mutation: {
         createCrmActivityTask: async (obj, args, context, info) => {
-            const errors = activityTaskValidation.validateCreateActivityTask(args.input);
+            const errors = activityTaskValidation(args.input);
             if (errors.error) {
                 throw new Error(errors.error.details[0].message);
             }
@@ -93,23 +93,22 @@ module.exports = {
                     });
                     break;
             }
-            const activityTaskObj = await model.ActivityTask.create(args.input, {
+            const result = await model.ActivityTask.create(args.input, {
                 include: modelIncludes
             });
             return {
+                result,
                 message: constant.SUCCESS
             };
         },
         updateCrmActivityTask: async (obj, args, context, info) => {
-            const errors = activityTaskValidation.validateEditActivityTask(args.input);
+            const errors = activityTaskValidation(args.input);
             if (errors.error) {
                 throw new Error(errors.error.details[0].message);
             }
-            const activityTaskId = args.input.id;
-            delete args.input.id;
             const activityTaskObj = await model.ActivityTask.findOne({
                 where: {
-                    id: activityTaskId,
+                    id: args.id,
                     is_deleted: 0
                 }
             });

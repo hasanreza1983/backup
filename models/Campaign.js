@@ -9,6 +9,7 @@ module.exports = function (sequelize, DataTypes) {
     const Campaign = sequelize.define('Campaign', {
         id: {
             type: DataTypes.INTEGER(11),
+            allowNull: false,
             primaryKey: true,
             autoIncrement: true
         },
@@ -18,14 +19,18 @@ module.exports = function (sequelize, DataTypes) {
         },
         id_crm_campaign_type_master: {
             type: DataTypes.INTEGER(11),
-            allowNull: true
+            allowNull: true,
+            references: {
+                model: 'CampaignTypeMaster',
+                key: 'id'
+            }
         },
         campaign_name: {
-            type: DataTypes.STRING(50),
-            allowNull: true
+            type: DataTypes.STRING(100),
+            allowNull: false
         },
         campaign_status: {
-            type: DataTypes.ENUM('Planning', 'Active', 'Inactive', 'Complete'),
+            type: DataTypes.ENUM('planning', 'active', 'inactive', 'complete'),
             allowNull: true
         },
         start_date: {
@@ -37,28 +42,34 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: true
         },
         expected_revenue: {
-            type: DataTypes.STRING(50)
+            type: DataTypes.DECIMAL(20, 2),
+            allowNull: true
         },
         budgeted_cost: {
-            type: DataTypes.STRING(50),
+            type: DataTypes.DECIMAL(20, 2),
             allowNull: true
         },
         actual_cost: {
-            type: DataTypes.STRING(100)
+            type: DataTypes.DECIMAL(20, 2),
+            allowNull: true
         },
         description: {
             type: DataTypes.TEXT,
             allowNull: true
         },
         is_deleted: {
-            type: DataTypes.TINYINT(1)
+            type: DataTypes.TINYINT(1),
+            allowNull: false,
+            defaultValue: '0'
         },
         created_at: {
             type: DataTypes.DATE,
+            allowNull: true,
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
         },
         updated_at: {
             type: DataTypes.DATE,
+            allowNull: true,
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
         },
         deleted_at: {
@@ -66,7 +77,8 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: true
         },
         created_by: {
-            type: DataTypes.INTEGER(11)
+            type: DataTypes.INTEGER(11),
+            allowNull: false
         },
         updated_by: {
             type: DataTypes.INTEGER(11),

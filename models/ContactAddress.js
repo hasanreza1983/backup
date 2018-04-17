@@ -8,7 +8,8 @@
 module.exports = function (sequelize, DataTypes) {
     const ContactAddress = sequelize.define('ContactAddress', {
         id_crm_contact: {
-            type: DataTypes.TINYINT(11),
+            type: DataTypes.INTEGER(11),
+            allowNull: false,
             references: {
                 model: 'Contact',
                 key: 'id'
@@ -16,6 +17,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         id_crm_address: {
             type: DataTypes.INTEGER(11),
+            allowNull: false,
             references: {
                 model: 'Address',
                 key: 'id'
@@ -32,14 +34,11 @@ module.exports = function (sequelize, DataTypes) {
                 name: 'id_crm_contact'
             }
         });
-
         ContactAddress.belongsTo(models.Address, {
             foreignKey: {
                 name: 'id_crm_address'
             }
         });
-       
     }
-
     return ContactAddress;
 };

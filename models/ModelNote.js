@@ -7,31 +7,39 @@ module.exports = function (sequelize, DataTypes) {
     const ModelNote = sequelize.define('ModelNote', {
         id: {
             type: DataTypes.INTEGER(11),
+            allowNull: false,
             primaryKey: true,
             autoIncrement: true
         },
         model_name: {
-            type: DataTypes.ENUM('Lead', 'Contact', 'Company', 'Deal', 'Campaign')
+            type: DataTypes.ENUM('Lead', 'Contact', 'Company', 'Deal', 'Campaign'),
+            allowNull: false
         },
         model_id: {
-            type: DataTypes.INTEGER(11)
+            type: DataTypes.INTEGER(11),
+            allowNull: false
         },
         note_title: {
             type: DataTypes.STRING(255),
-            allowNull: true
+            allowNull: true,
         },
         note_description: {
-            type: DataTypes.TEXT
+            type: DataTypes.TEXT,
+            allowNull: false
         },
         is_deleted: {
-            type: DataTypes.TINYINT(1)
+            type: DataTypes.TINYINT(1),
+            allowNull: false,
+            defaultValue: '0'
         },
         created_at: {
             type: DataTypes.DATE,
+            allowNull: true,
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
         },
         updated_at: {
             type: DataTypes.DATE,
+            allowNull: true,
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
         },
         deleted_at: {
@@ -39,7 +47,8 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: true
         },
         created_by: {
-            type: DataTypes.INTEGER(11)
+            type: DataTypes.INTEGER(11),
+            allowNull: false
         },
         updated_by: {
             type: DataTypes.INTEGER(11),
@@ -63,8 +72,7 @@ module.exports = function (sequelize, DataTypes) {
 
         // ModelNote.belongsTo(models.Lead, {
         //     foreignKey: 'model_id',
-        //     constraints: false,
-        //     as: 'leadNote'
+        //     constraints: false            
         // });
 
         // ModelNote.belongsTo(models.Contact, {
@@ -90,7 +98,7 @@ module.exports = function (sequelize, DataTypes) {
         //     constraints: false,
         //     as: 'campaignNote'
         // });
-       
+
     }
     return ModelNote;
 };

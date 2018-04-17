@@ -9,6 +9,7 @@ module.exports = function (sequelize, DataTypes) {
     const CompanyAddress = sequelize.define('CompanyAddress', {
         id_crm_company: {
             type: DataTypes.INTEGER(11),
+            allowNull: false,
             references: {
                 model: 'Company',
                 key: 'id'
@@ -16,6 +17,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         id_crm_address: {
             type: DataTypes.INTEGER(11),
+            allowNull: false,
             references: {
                 model: 'Address',
                 key: 'id'
@@ -24,6 +26,7 @@ module.exports = function (sequelize, DataTypes) {
     }, {
             tableName: 'crm_company_address'
         });
+
 
     CompanyAddress.associate = (models) => {
 
@@ -37,7 +40,7 @@ module.exports = function (sequelize, DataTypes) {
                 name: 'id_crm_company',
             }
         });
-       
+
     }
 
     return CompanyAddress;

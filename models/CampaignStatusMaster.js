@@ -5,25 +5,28 @@
  *
  */
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
     const CampaignStatusMaster = sequelize.define('CampaignStatusMaster', {
         id: {
             type: DataTypes.TINYINT(3),
-		    primaryKey: true,
+            allowNull: false,
+            primaryKey: true,
             autoIncrement: true
-        },			
-        campaign_status: {
-            type: DataTypes.STRING(40)
-        },			
+        },
+        company_status: {
+            type: DataTypes.STRING(50),
+            allowNull: false
+        },
         weight: {
-            type: DataTypes.TINYINT(2)
+            type: DataTypes.TINYINT(2),
+            allowNull: false
         }
     }, {
-            tableName: 'crm_campaign_status_master'
+            tableName: 'crm_company_status_master'
         });
 
     CampaignStatusMaster.associate = (models) => {
-        
+
         CampaignStatusMaster.hasMany(models.CampaignLink, {
             foreignKey: {
                 name: 'id_crm_campaign_status_master',
@@ -31,7 +34,7 @@ module.exports = function(sequelize, DataTypes) {
             }, onDelete: 'CASCADE'
         });
 
-		
+
     }
     return CampaignStatusMaster;
 };

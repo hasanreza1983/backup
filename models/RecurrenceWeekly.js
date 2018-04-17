@@ -5,17 +5,17 @@
  *
  */
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
     const RecurrenceWeekly = sequelize.define('RecurrenceWeekly', {
         id: {
             type: DataTypes.INTEGER(11),
-		    primaryKey: true,
+            primaryKey: true,
             autoIncrement: true
         },
         id_crm_activity_task: {
             type: DataTypes.INTEGER(11),
             allowNull: false,
-		    references: {
+            references: {
                 model: 'ActivityTask',
                 key: 'id'
             }
@@ -27,37 +27,37 @@ module.exports = function(sequelize, DataTypes) {
         },
         weekly_monday: {
             type: DataTypes.BOOLEAN,
-		    allowNull: false,
+            allowNull: false,
             defaultValue: false
         },
         weekly_tuesday: {
             type: DataTypes.BOOLEAN,
-		    allowNull: false,
+            allowNull: false,
             defaultValue: false
         },
         weekly_wednesday: {
             type: DataTypes.BOOLEAN,
-		    allowNull: false,
+            allowNull: false,
             defaultValue: false
         },
         weekly_thursday: {
             type: DataTypes.BOOLEAN,
-		    allowNull: false,
+            allowNull: false,
             defaultValue: false
         },
         weekly_friday: {
             type: DataTypes.BOOLEAN,
-		    allowNull: false,
+            allowNull: false,
             defaultValue: false
         },
         weekly_saturday: {
             type: DataTypes.BOOLEAN,
-		    allowNull: false,
+            allowNull: false,
             defaultValue: false
         },
         weekly_sunday: {
             type: DataTypes.BOOLEAN,
-		    allowNull: false,
+            allowNull: false,
             defaultValue: false
         },
         is_deleted: {
@@ -66,12 +66,12 @@ module.exports = function(sequelize, DataTypes) {
         },
         deleted_at: {
             type: DataTypes.DATE,
-		    allowNull: true
+            allowNull: true
         }
     },
-    {
-        tableName: 'crm_recurrence_weekly'
-    });
+        {
+            tableName: 'crm_recurrence_weekly'
+        });
 
     return RecurrenceWeekly;
 };

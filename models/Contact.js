@@ -5,95 +5,102 @@
  *
  */
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
     const Contact = sequelize.define('Contact', {
         id: {
             type: DataTypes.INTEGER(11),
-		    primaryKey: true,
+            primaryKey: true,
             autoIncrement: true
-        },			
+        },
         owner: {
-            type: DataTypes.INTEGER(11)
-        },			
-        id_crm_lead_contact_parent: {
             type: DataTypes.INTEGER(11),
-		    references: {
-                model: 'LeadContactParent',
+            allowNull: false
+        },
+        id_crm_lead_contact_parent: {
+            type: DataTypes.INTEGER(11),            
+            references: {
+                model: 'CrmLeadContactParent',
                 key: 'id'
             }
-        },			
+        },
         id_crm_company: {
             type: DataTypes.INTEGER(11),
-		    references: {
-                model: 'Company',
+            allowNull: false,
+            references: {
+                model: 'CrmCompany',
                 key: 'id'
             }
-        },			
+        },
         home_phone: {
             type: DataTypes.STRING(20),
-		    allowNull: true
-        },			
+            allowNull: true
+        },
         department: {
             type: DataTypes.STRING(100),
-		    allowNull: true
-        },			
+            allowNull: true
+        },
         date_of_birth: {
             type: DataTypes.DATE,
-		    allowNull: true
-        },			
+            allowNull: true
+        },
         assistant_name: {
             type: DataTypes.STRING(50),
-		    allowNull: true
-        },			
+            allowNull: true
+        },
         assistant_parent_id: {
             type: DataTypes.INTEGER(11),
-		    allowNull: true
-        },			
+            allowNull: true
+        },
         assistant_phone: {
             type: DataTypes.STRING(50),
-		    allowNull: true
-        },			
+            allowNull: true
+        },
         reports_to_name: {
             type: DataTypes.STRING(50),
-		    allowNull: true
-        },			
+            allowNull: true
+        },
         reports_to_parent_id: {
             type: DataTypes.INTEGER(11),
-		    allowNull: true
-        },			
+            allowNull: true
+        },
         id_crm_pipeline_stage: {
             type: DataTypes.TINYINT(3),
             allowNull: true,
-		    references: {
-                model: 'PipelineStage',
+            references: {
+                model: 'CrmPipelineStage',
                 key: 'id'
             }
-        },			
+        },
         is_deleted: {
-            type: DataTypes.TINYINT(1)
-        },			
+            type: DataTypes.TINYINT(1),
+            allowNull: false,
+            defaultValue: '0'
+        },
         created_at: {
             type: DataTypes.DATE,
-		    defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
-        },			
+            allowNull: false,
+            defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
+        },
         updated_at: {
             type: DataTypes.DATE,
-		    defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
-        },			
+            allowNull: false,
+            defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
+        },
         deleted_at: {
             type: DataTypes.DATE,
-		    allowNull: true
-        },			
+            allowNull: true
+        },
         created_by: {
-            type: DataTypes.INTEGER(11)
-        },			
+            type: DataTypes.INTEGER(11),
+            allowNull: false
+        },
         updated_by: {
             type: DataTypes.INTEGER(11),
-		    allowNull: true
-        },			
+            allowNull: true
+        },
         deleted_by: {
             type: DataTypes.INTEGER(11),
-		    allowNull: true
+            allowNull: true
         }
     }, {
             tableName: 'crm_contact'
@@ -107,7 +114,7 @@ module.exports = function(sequelize, DataTypes) {
             otherKey: 'id_crm_address',
             as: 'Addresses'
         });
-        
+
         Contact.belongsTo(models.Company, {
             foreignKey: {
                 name: 'id_crm_company',
@@ -115,7 +122,7 @@ module.exports = function(sequelize, DataTypes) {
             }, onDelete: 'CASCADE'
         });
 
-		Contact.belongsTo(models.Contact, {
+        Contact.belongsTo(models.Contact, {
             foreignKey: {
                 name: 'assistant_parent_id',
                 allowNull: true
@@ -133,7 +140,7 @@ module.exports = function(sequelize, DataTypes) {
             onDelete: 'CASCADE'
         });
 
-		Contact.belongsTo(models.LeadContactParent, {
+        Contact.belongsTo(models.LeadContactParent, {
             foreignKey: {
                 name: 'id_crm_lead_contact_parent',
                 allowNull: true
@@ -159,7 +166,7 @@ module.exports = function(sequelize, DataTypes) {
             otherKey: 'id_crm_campaign',
             constraints: false
         });
-		
+
     }
     return Contact;
 };

@@ -9,25 +9,30 @@ module.exports = function (sequelize, DataTypes) {
     const ModelNoteAttachment = sequelize.define('ModelNoteAttachment', {
         id: {
             type: DataTypes.INTEGER(11),
+            allowNull: false,
             primaryKey: true,
             autoIncrement: true
         },
         id_crm_model_note: {
             type: DataTypes.INTEGER(11),
+            allowNull: false,
             references: {
-                model: 'ModelNote',
+                model: 'mModelNote',
                 key: 'id'
             }
         },
         minio_file_id: {
             type: DataTypes.STRING(100),
-            unique: true
+            allowNull: false
         },
         is_deleted: {
-            type: DataTypes.TINYINT(1)
+            type: DataTypes.TINYINT(1),
+            allowNull: false,
+            defaultValue: '0'
         },
         created_at: {
             type: DataTypes.DATE,
+            allowNull: false,
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
         },
         deleted_at: {

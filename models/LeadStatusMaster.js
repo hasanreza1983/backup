@@ -5,32 +5,35 @@
  *
  */
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
     const LeadStatusMaster = sequelize.define('LeadStatusMaster', {
         id: {
             type: DataTypes.INTEGER(11),
-		    primaryKey: true,
+            allowNull: false,
+            primaryKey: true,
             autoIncrement: true
-        },			
+        },
         status: {
-            type: DataTypes.STRING(40)
-        },			
+            type: DataTypes.STRING(40),
+            allowNull: false
+        },
         weight: {
-            type: DataTypes.TINYINT(2)
+            type: DataTypes.TINYINT(2),
+            allowNull: false
         }
     }, {
             tableName: 'crm_lead_status_master'
         });
 
     LeadStatusMaster.associate = (models) => {
-        
+
         LeadStatusMaster.hasMany(models.Lead, {
             foreignKey: {
                 name: 'id_crm_lead_status_master',
                 allowNull: true
             }, onDelete: 'CASCADE'
         });
-		
+
     }
     return LeadStatusMaster;
 };

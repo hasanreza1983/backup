@@ -11,6 +11,10 @@ module.exports = function (sequelize, DataTypes) {
             primaryKey: true,
             autoIncrement: true
         },
+        owner: {
+            type: DataTypes.INTEGER(11),
+            allowNull: false
+        },
         subject: {
             type: DataTypes.STRING(255),
             allowNull: false
@@ -19,9 +23,13 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.DATE,
             allowNull: false
         },
-        task_status: {
-            type: DataTypes.ENUM('Not Started', 'Deferred', 'In Progress', 'Completed', 'Waiting on Someone Else'),
-            allowNull: true
+        id_crm_task_status_master: {
+            type: DataTypes.TINYINT(3),
+            allowNull: true,
+            references: {
+                model: 'TaskStatusMaster',
+                key: 'id'
+            }
         },
         recurrence_type: {
             type: DataTypes.ENUM('daily', 'weekly', 'monthly', 'yearly', 'none'),
@@ -70,8 +78,8 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: true
         }
     }, {
-        tableName: 'crm_activity_task'
-    });
+            tableName: 'crm_activity_task'
+        });
 
     ActivityTask.associate = (models) => {
         /*
@@ -88,7 +96,7 @@ module.exports = function (sequelize, DataTypes) {
             constraints: false
         });
         */
-        
+
         ActivityTask.hasMany(models.ActivityTaskLink, {
             foreignKey: 'id_crm_activity_task'
         });
@@ -113,6 +121,12 @@ module.exports = function (sequelize, DataTypes) {
             as: 'Yearly'
         });
 
+        ActivityTask.belongsTo(models.TaskStatusMaster, {
+            foreignKey: {
+                name: 'id_crm_task_status_master',
+                allowNull: true
+            }, onDelete: 'CASCADE'
+        });
     }
     return ActivityTask;
 };
