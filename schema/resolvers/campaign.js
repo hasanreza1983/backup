@@ -4,30 +4,32 @@
  *
  */
 const model = require('../../models');
-const validation = require('../../validation/campaignValidation');
+const campaignValidation = require('../../validation/campaignValidation');
 const common = require('../../lib/commonResolver');
 const constant = require('../../lib/constant');
 module.exports = {
     Query: {
         getCrmCampaignById: async (obj, args, context, info) => {
-            const response = await common.getCrmModelById(args.id, model.Campaign, [
-                {
-                    model: model.Lead, required: false,
+            const response = await common.getCrmModelById(args.id, model.Campaign, [{
+                    model: model.Lead,
+                    required: false,
                     include: [{
                         model: model.LeadContactParent
                     }]
                 },
                 {
-                    model: model.Contact, required: false,
+                    model: model.Contact,
+                    required: false,
                     include: [{
                         model: model.LeadContactParent
                     }]
                 },
-                { model: model.Deal, required: false }
+                {
+                    model: model.Deal,
+                    required: false
+                }
             ], 'Campaign');
-
             return response;
-
         }, // end of getCrmCampaignById resolver
 
         getCrmCampaignList: async (obj, args, context, info) => {
@@ -45,106 +47,41 @@ module.exports = {
         },
 
         getCrmCampaignListByPage: async (obj, args, context, info) => {
-
-            const response = await common.getCrmModelListByPage(args, model.Campaign, [
-                { model: model.CampaignTypeMaster }
-            ], 'Campaigns');
-
+            const response = await common.getCrmModelListByPage(args, model.Campaign, [{
+                model: model.CampaignTypeMaster
+            }], 'Campaigns');
             return response;
-
         } // end of getAllCrmCampaignList resolver
-
     }, // end of query
 
     Mutation: {
         createCrmCampaign: async (obj, args, context, info) => {
-            // Prepare array to validate fields
-            let objCrmCampaign = [];
-            let arrErrors = [];
-            let responseStatus = [];
-
-            let owner = '';
-            if (context.user.id) {
-                owner = context.user.id;
-                args.input.created_by = context.user.id;
-                args.input.owner = context.user.id;
-            }
-
-            arrErrors = validation.validateCreateInput(args.input); // validation for CrmCampaign input data
-            // arrErrors.error = null;
-            if (arrErrors.error != null) {
+            const arrErrors = campaignValidation.validateInput(args.input); // validation for CrmCampaign input data
+            if (arrErrors.error) {
                 throw new Error(arrErrors.error.details[0].message);
-            } else {
-
-                let filter = {
-                    where: {
-                        id: args.input.id,
-                        is_deleted: 0
-                    },
-                    defaults: args.input
-                };
-
-                const objCrmCampaign = await model.Campaign.findOrCreate(filter)
-                    .spread((result, is_created) => {
-                        if (is_created) {
-                            return result.dataValues;
-                        } else {
-                            return result.updateAttributes(args.input).then(function (updated) {
-                                return updated;
-                            });
-                        }
-                    });
-
-                //  objCrmCampaign.Campaign = objCrmCampaign;
-                objCrmCampaign.message = constant.SUCCESS;
-                return objCrmCampaign;
-
             }
+            args.input.created_by = context.user.id;
+            const objCrmCampaign = await model.Campaign.create(args.input);
+            objCrmCampaign.Campaign = objCrmCampaign;
+            objCrmCampaign.message = constant.SUCCESS;
+            return objCrmCampaign;
         }, // end of createCrmCampaign resolver
 
         updateCrmCampaign: async (obj, args, context, info) => {
-
-            // Prepare array to validate fields
-            let objCrmCampaign = [];
-            let arrErrors = [];
-            let responseStatus = [];
-
-            let owner = '';
-            if (context.user.id) {
-                owner = context.user.id;
-                args.input.updated_by = context.user.id;
-                args.input.owner = context.user.id;
-            }
-
-            arrErrors = validation.validateUpdateInput(args.input); // validation for CrmCampaign input data
-            // arrErrors.error = null;
-            if (arrErrors.error != null) {
+            const arrErrors = campaignValidation.validateInput(args.input); // validation for CrmCampaign input data
+            if (arrErrors.error) {
                 throw new Error(arrErrors.error.details[0].message);
-            } else {
-                const objCrmCampaign = await model.Campaign.findOne({
-                    where: {
-                        id: args.input.id,
-                        is_deleted: 0
-                    }
-                });
-
-                if (objCrmCampaign) {
-                    let isUpdated = await model.Campaign.update(args.input, {
-                        where: {
-                            id: args.input.id,
-                            is_deleted: 0
-                        }
-                    });
-
-                } else {
-                    throw new Error(constant.DOES_NOT_EXIST);
-                }
             }
-
-            //  objCrmCampaign.Campaign = objCrmCampaign;
-            objCrmCampaign.message = constant.SUCCESS;
-            return objCrmCampaign;
-
+            args.input.updated_by = context.user.id;
+            await model.Campaign.update(args.input, {
+                where: {
+                    id: args.id,
+                    is_deleted: 0
+                }
+            });
+            return {
+                message: constant.SUCCESS
+            };
         }, // end of  updateCrmCampaign resolver
 
         deleteCrmCampaignById: async (obj, args, context, info) => {

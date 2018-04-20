@@ -1,82 +1,58 @@
 /*
-* This validation file is for type CrmModelNote resolver
-* Make Schema to validate CrmModelNote User Inputs
-* Hasan Reza 2018-03-28;
-*
-*/
+ * This validation file is for type CrmModelNote resolver
+ * Make Schema to validate CrmModelNote User Inputs
+ * Hasan Reza 2018-03-28;
+ *
+ */
 const Joi = require('joi');
 
-let schemaIDInput = Joi.object().keys({
-	id: Joi.number().required()
+const schemaGetInput = Joi.object().keys({
+	model_name: Joi.string().valid('Lead', 'Contact', 'Company', 'Deal', 'Campaign').required(),
+	model_id: Joi.number().integer().required()
 });
-// function to validate schemaID
-const validateIDInput = (inputID) => {
-	return Joi.validate({ id: inputID }, schemaIDInput, {
+
+const schemaCreateInput = Joi.object().keys({
+	model_name: Joi.string().valid('Lead', 'Contact', 'Company', 'Deal', 'Campaign').required(),
+	model_id: Joi.number().integer().required(),
+	note_title: Joi.string().max(255).allow(null).optional(),
+	note_description: Joi.string().allow(null).optional(),
+	ModelNoteAttachments: Joi.array().items(Joi.object().keys({
+		minio_file_id: Joi.string().max(100).required(),
+	})).allow(null).optional()
+});
+
+const schemaUpdateInput = Joi.object().keys({
+	note_title: Joi.string().max(255).allow(null).optional(),
+	note_description: Joi.string().allow(null).optional(),
+	ModelNoteAttachments: Joi.array().items(Joi.object().keys({
+		minio_file_id: Joi.string().max(100).required(),
+		is_removed: Joi.boolean().optional(),
+	})).allow(null).optional()
+});
+
+// function to validate get notes schema
+const validateGetInput = (inputArguments) => {
+	return Joi.validate(inputArguments, schemaGetInput, {
 		abortEarly: true
 	});
 }
 
-let schemaCreateInput = Joi.object().keys({
-	model_name: Joi.string().valid('Lead', 'Contact', 'Company', 'Deal', 'Campaign'),
-	model_id: Joi.number().integer().required(),
-	note_title: Joi.string().required(),
-	note_description: Joi.string().required(),
-	created_by: Joi.number().integer().required(),
-
-	ModelNoteAttachments: Joi.array().items(Joi.object().keys({
-		minio_file_id: Joi.string()
-	}))
-
-});
-
-// function to validate schemaCreate
+// function to validate create note schema
 const validateCreateInput = (inputArguments) => {
 	return Joi.validate(inputArguments, schemaCreateInput, {
 		abortEarly: true
 	});
 }
 
-let schemaUpdateInput = Joi.object().keys({
-	id: Joi.number().integer().required(),
-	model_name: Joi.string().valid('Lead', 'Contact', 'Company', 'Deal', 'Campaign'),
-	model_id: Joi.number().integer().required(),
-	note_title: Joi.string().required(),
-	note_description: Joi.string().required(),
-	updated_by: Joi.number().integer().required(),
-
-	ModelNoteAttachments: Joi.array().items(Joi.object().keys({
-		id: Joi.number().integer(),
-		id_crm_lead_note: Joi.number().integer(),
-		minio_file_id: Joi.string(),
-		minio_file_url: Joi.string(),
-		is_removed: Joi.boolean()
-	}))
-});
-
-// function to validate schemaUpdate
+// function to validate update note schema
 const validateUpdateInput = (inputArguments) => {
 	return Joi.validate(inputArguments, schemaUpdateInput, {
 		abortEarly: true
 	});
 }
 
-let schemaDeleteInput = Joi.object().keys({
-	id: Joi.number().integer().required(),
-	model_name: Joi.string().valid('Lead', 'Contact', 'Company', 'Deal', 'Campaign'),
-	model_id: Joi.number().integer().required(),
-		
-});
-
-// function to validate schemaDelete
-const validateDeleteInput = (inputArguments) => {
-	return Joi.validate(inputArguments, schemaDeleteInput, {
-		abortEarly: true
-	});
-}
-
 module.exports = {
-	validateIDInput,
+	validateGetInput,
 	validateCreateInput,
-	validateUpdateInput,
-	validateDeleteInput
+	validateUpdateInput
 }

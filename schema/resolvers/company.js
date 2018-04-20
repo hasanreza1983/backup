@@ -7,6 +7,7 @@
 const model = require('../../models');
 const constant = require('../../lib/constant');
 const common = require('../../lib/commonResolver');
+const companyValidation = require('../../validation/companyValidation');
 
 const modelIncludes = [{
         model: model.Address,
@@ -75,6 +76,10 @@ module.exports = {
     },
     Mutation: {
         createCrmCompany: async (obj, args, context, info) => {
+            const errors = companyValidation.validateInput(args.input);
+            if (errors.error) {
+                throw new Error(errors.error.details[0].message);
+            }
             args.input.created_by = context.user.id;
             const companyObj = await model.Company.create(args.input, {
                 include: modelIncludes
@@ -85,14 +90,16 @@ module.exports = {
             }
         },
         updateCrmCompany: async (obj, args, context, info) => {
-            const companyId = args.input.id;
+            const errors = companyValidation.validateInput(args.input);
+            if (errors.error) {
+                throw new Error(errors.error.details[0].message);
+            }
             const Addresses = args.input.Addresses;
-            delete args.input.id;
             delete args.input.Addresses;
             const companyObj = await model.Company.findOne({
                 include: modelIncludes,
                 where: {
-                    id: companyId,
+                    id: args.id,
                     is_deleted: 0
                 }
             });
@@ -104,13 +111,11 @@ module.exports = {
                 if (Addresses && Addresses.length) {
                     await common.updateModelAddress(Addresses, model, companyObj);
                 }
-                companyObj.Addresses = await companyObj.getAddresses();
                 await companyObj.save();
             } else {
                 throw new Error(constant.DOES_NOT_EXIST);
             }
             return {
-                Company: companyObj,
                 message: constant.SUCCESS
             }
         },

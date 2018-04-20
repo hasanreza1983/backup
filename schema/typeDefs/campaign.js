@@ -28,20 +28,16 @@ type CrmCampaign {
 	Contacts: [CrmContact]
 }
 input CrmCampaignInput {
-	id: Int
-	owner: Int
+	owner: Int!
 	id_crm_campaign_type_master: Int
-	campaign_name: String
+	campaign_name: String!
 	campaign_status: String
 	start_date: String
 	end_date: String
 	expected_revenue: String
 	budgeted_cost: String
 	actual_cost: String
-	description: String
-	created_by: Int
-	updated_by: Int
-	deleted_by: Int		
+	description: String	
 }
 
 type CrmCampaignOutput {
@@ -63,7 +59,7 @@ type Query {
 
 type Mutation {
     createCrmCampaign(input: CrmCampaignInput!): CrmCampaignOutput
-    updateCrmCampaign(input: CrmCampaignInput!): CrmCampaignOutput
+    updateCrmCampaign(id: Int!, input: CrmCampaignInput!): CrmDefaultOutput
     deleteCrmCampaignById(id: [Int!]!): CrmDefaultOutput
 }
 

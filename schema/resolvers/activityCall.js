@@ -24,7 +24,7 @@ module.exports = {
     },
     Mutation: {
         createCrmActivityCall: async (obj, args, context, info) => {
-            const errors = activityCallValidation(args.input);
+            const errors = activityCallValidation.validateInput(args.input);
             if (errors.error) {
                 throw new Error(errors.error.details[0].message);
             }
@@ -38,7 +38,7 @@ module.exports = {
             }
         },
         updateCrmActivityCall: async (obj, args, context, info) => {
-            const errors = activityCallValidation(args.input);
+            const errors = activityCallValidation.validateInput(args.input);
             if (errors.error) {
                 throw new Error(errors.error.details[0].message);
             }

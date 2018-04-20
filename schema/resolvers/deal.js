@@ -4,69 +4,56 @@
  *
  */
 const model = require('../../models');
-const validation = require('../../validation/dealValidation');
+const constant = require('../../lib/constant');
 const common = require('../../lib/commonResolver');
-const Op = model.Sequelize.Op;
-const ownerList = require('../resolvers/owner');
-let message = '';
+const dealValidation = require('../../validation/dealValidation');
+
 module.exports = {
     Query: {
         getCrmDealById: async (obj, args, context, info) => {
-            const response = await common.getCrmModelById(args.id, model.Deal, [
-                { model: model.Campaign },
-                { model: model.Company },
+            const response = await common.getCrmModelById(args.id, model.Deal, [{
+                    model: model.Campaign
+                },
+                {
+                    model: model.Company
+                },
                 {
                     model: model.Contact,
-                    include: [
-                        { model: model.LeadContactParent }
-                    ]
+                    include: [{
+                        model: model.LeadContactParent
+                    }]
                 },
-                { model: model.LeadSourceMaster },
-                { model: model.PipelineStage }
+                {
+                    model: model.LeadSourceMaster
+                },
+                {
+                    model: model.PipelineStage
+                }
             ], 'Deal');
             return response;
 
         }, // end of getCrmDealById resolver
 
-        getAllCrmDeal: async (obj, args, context, info) => {
-            let where = {};
-            let whereConditions = args.whereConditions + "";  // Mixed Conditions for the query in JSON string
-
-            if (whereConditions) {
-                whereConditions = JSON.stringify(whereConditions);
-                whereConditions = whereConditions.replace(/"/g, '');
-                whereConditions = whereConditions.replace(/'/g, '"');
-                whereConditions = JSON.parse(whereConditions);
-                where = Object.assign({}, where, whereConditions);
-            }
-            let filterFindAll = {
-                where: where
-            };
-            const objDeals = await model.Deal.findAll(filterFindAll);  // End of model query
-            objDeals.Deals = objDeals;
-
-            if (objDeals) {
-                objDeals.CrmDeals = objDeals;
-                objDeals.message = "The whole selection was successful";
-                return objDeals;
-            } else {
-                throw new Error("No Deal data exists");
-            }
-        }, // end of getAllCrmDeal resolver
-
         getCrmDealListByPage: async (obj, args, context, info) => {
 
-            const response = await common.getCrmModelListByPage(args, model.Deal, [
-                { model: model.Campaign },
-                { model: model.Company },
+            const response = await common.getCrmModelListByPage(args, model.Deal, [{
+                    model: model.Campaign
+                },
+                {
+                    model: model.Company
+                },
                 {
                     model: model.Contact,
-                    include: [
-                        { model: model.LeadContactParent }
-                    ]
+                    include: [{
+                        model: model.LeadContactParent
+                    }]
                 },
-                { model: model.LeadSourceMaster },
-                { model: model.PipelineStage }
+                {
+                    model: model.LeadSourceMaster
+                },
+                {
+                    model: model.PipelineStage
+                }
             ], 'Deals');
             return response;
         } // end of getAllCrmDealList resolver
@@ -75,99 +62,32 @@ module.exports = {
 
     Mutation: {
         createCrmDeal: async (obj, args, context, info) => {
-            // Prepare array to validate fields
-            let objDeal = [];
-            let arrErrors = [];
-            let responseStatus = [];
-
-            let owner = '';
-            if (context.user.id) {
-                owner = context.user.id;
-                args.input.created_by = context.user.id;
-                args.input.owner = context.user.id;
-            }
-            arrErrors = validation.validateCreateInput(args.input); // validation for CrmDeal input data
-            // arrErrors.error = null;
-            if (arrErrors.error != null) {
+            const arrErrors = dealValidation.validateInput(args.input); // validation for CrmDeal input data
+            if (arrErrors.error) {
                 throw new Error(arrErrors.error.details[0].message);
-            } else {
-                let filter = {
-                    include: [
-                        { model: model.Campaign },
-                        { model: model.Company },
-                        { model: model.Contact, required: false },
-                        { model: model.LeadSourceMaster },
-                        { model: model.PipelineStage }],
-                    where: {
-                        id: args.input.id,
-
-                        is_deleted: 0
-                    },
-                    defaults: args.input
-                };
-                const objDeal = await model.Deal.findOrCreate(filter)
-                    .spread((result, is_created) => {
-                        if (is_created) {
-                            message = "The create was successful";
-                            return result.dataValues;
-                        } else {
-                            return result.updateAttributes(args.input).then(function (updated) {
-                                message = "The update was successful";
-                                return updated;
-                            });
-                        }
-                    });
-
-                objDeal.Deal = objDeal;
-                objDeal.message = message;
-                return objDeal;
             }
+            args.input.created_by = context.user.id;
+            const objDeal = await model.Deal.create(args.input);
+            objDeal.Deal = objDeal;
+            objDeal.message = constant.SUCCESS;
+            return objDeal;
         }, // end of createDeal resolver
 
         updateCrmDeal: async (obj, args, context, info) => {
-            // Prepare array to validate fields
-            let objDeal = [];
-            let arrErrors = [];
-            let responseStatus = [];
-
-            let owner = '';
-            if (context.user.id) {
-                owner = context.user.id;
-                args.input.updated_by = context.user.id;
-                args.input.owner = context.user.id;
-            }
-
-            arrErrors = validation.validateUpdateInput(args.input); // validation for Deal input data
-            // arrErrors.error = null;
-            if (arrErrors.error != null) {
+            const arrErrors = dealValidation.validateInput(args.input); // validation for Deal input data
+            if (arrErrors.error) {
                 throw new Error(arrErrors.error.details[0].message);
-            } else {
-                const objDeal = await model.Deal.findOne({
-                    where: {
-                        id: args.input.id,
-                        is_deleted: 0
-                    }
-                });
-                if (objDeal) {
-                    let isUpdated = await model.Deal.update(args.input, {
-                        where: {
-                            id: args.input.id,
-                            is_deleted: 0
-                        }
-                    });
-                    if (isUpdated) {
-
-                        message = "The update was successful with ID " + args.input.id;
-                    }
-                } else {
-                    throw new Error("ID does not exist!");
-                }
             }
-
-            objDeal.Deal = objDeal;
-            objDeal.message = message;
-            return objDeal;
-
+            args.input.updated_by = context.user.id;
+            await model.Deal.update(args.input, {
+                where: {
+                    id: args.id,
+                    is_deleted: 0
+                }
+            });
+            return {
+                message: constant.SUCCESS
+            };
         }, // end of  updateCrmDeal resolver
 
         deleteCrmDealById: async (obj, args, context, info) => {

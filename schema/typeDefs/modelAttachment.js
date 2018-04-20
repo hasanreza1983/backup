@@ -16,14 +16,13 @@ type CrmModelAttachment {
 	created_by: Int	
 }
 input CrmModelAttachmentInput {
-    id: Int
-    minio_file_id: String    
+    minio_file_id: String!
 }
 
 input CrmModelAttachmentsInput {	
-	model_name: String
-	model_id: Int
-	ModelAttachments: [CrmModelAttachmentInput]		
+	model_name: String!
+	model_id: Int!
+	ModelAttachments: [CrmModelAttachmentInput!]!
 }
 
 
@@ -42,8 +41,8 @@ type Query {
     getCrmModelAttachmentList(input: CrmModelAttachmentsInput!): CrmModelAttachmentListOutput   
 }
 type Mutation {
-    createCrmModelAttachment(input: CrmModelAttachmentsInput!): CrmModelAttachmentOutput    
-    deleteCrmModelAttachmentById(input: CrmModelAttachmentInput!): CrmModelAttachmentOutput
+    createCrmModelAttachment(input: CrmModelAttachmentsInput!): CrmModelAttachmentOutput 
+    deleteCrmModelAttachmentById(id: Int!): CrmDefaultOutput
 }
 
 `;

@@ -32,7 +32,7 @@ module.exports = {
     },
     Mutation: {
         createCrmActivityEvent: async (obj, args, context, info) => {
-            const errors = activityEventValidation(args.input);
+            const errors = activityEventValidation.validateInput(args.input);
             if (errors.error) {
                 throw new Error(errors.error.details[0].message);
             }
@@ -46,7 +46,7 @@ module.exports = {
             }
         },
         updateCrmActivityEvent: async (obj, args, context, info) => {
-            const errors = activityEventValidation(args.input);
+            const errors = activityEventValidation.validateInput(args.input);
             if (errors.error) {
                 throw new Error(errors.error.details[0].message);
             }

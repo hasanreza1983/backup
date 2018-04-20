@@ -55,7 +55,7 @@ module.exports = {
     },
     Mutation: {
         createCrmActivityTask: async (obj, args, context, info) => {
-            const errors = activityTaskValidation(args.input);
+            const errors = activityTaskValidation.validateInput(args.input);
             if (errors.error) {
                 throw new Error(errors.error.details[0].message);
             }
@@ -102,7 +102,7 @@ module.exports = {
             };
         },
         updateCrmActivityTask: async (obj, args, context, info) => {
-            const errors = activityTaskValidation(args.input);
+            const errors = activityTaskValidation.validateInput(args.input);
             if (errors.error) {
                 throw new Error(errors.error.details[0].message);
             }

@@ -2,7 +2,7 @@ const Joi = require('joi');
 
 /********************************************** Starts: Validation schema  ***************************************************/
 // Schema to validate create & update activity task
-const schemaActivityTask = Joi.object().keys({
+const schemaInput = Joi.object().keys({
     owner: Joi.number().required(),
     subject: Joi.string().min(1).max(255),
     due_date: Joi.date(),
@@ -64,7 +64,12 @@ const schemaActivityTask = Joi.object().keys({
     recurrence_end_date: Joi.date().allow(null).optional()
 });
 
-// function to validate schema schemaActivityTask
-module.exports = (input) => {
-    return Joi.validate(input, schemaActivityTask, {abortEarly: true});
+// function to validate schema schemaInput
+const validateInput = (inputArguments) => {
+	return Joi.validate(inputArguments, schemaInput, {
+		abortEarly: true
+	});
+}
+module.exports = {
+	validateInput
 }

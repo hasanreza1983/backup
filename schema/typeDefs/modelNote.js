@@ -19,18 +19,16 @@ type CrmModelNote {
     ModelNoteAttachments : [CrmModelNoteAttachment]
 }
 input CrmModelNoteInput {
-	id: Int
-	model_name: String
-	model_id: Int
+	model_name: String!
+	model_id: Int!
 	note_title: String
     note_description: String
     ModelNoteAttachments : [CrmModelNoteAttachmentInput]
 }
 
 input CrmModelNotesInput {
-	id: Int
 	model_name: String!
-	model_id: Int!   
+	model_id: Int!
 }
 
 type CrmModelNoteOutput {
@@ -45,12 +43,12 @@ type CrmModelNoteListOutput {
 }
 
 type Query {
-    getAllCrmNotesByModel(input: CrmModelNoteInput! ): CrmModelNoteListOutput
+    getAllCrmNotesByModel(input: CrmModelNotesInput! ): CrmModelNoteListOutput
 }
 
 type Mutation {
     createCrmModelNote(input: CrmModelNoteInput!): CrmModelNoteOutput
-    updateCrmModelNote(input: CrmModelNoteInput!): CrmModelNoteOutput
-    deleteCrmModelNote(input: CrmModelNoteInput!): CrmModelNoteOutput
+    updateCrmModelNote(id: Int!, input: CrmModelNoteInput!): CrmDefaultOutput
+    deleteCrmModelNote(id: Int!): CrmDefaultOutput
 }
 `;

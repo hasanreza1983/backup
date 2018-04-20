@@ -8,9 +8,9 @@ const Sequelize = require('sequelize');
 const model = require('../../models');
 const constant = require('../../lib/constant');
 const common = require('../../lib/commonResolver');
+const contactValidation = require('../../validation/contactValidation');
 
-const modelIncludes = [
-    {
+const modelIncludes = [{
         model: model.LeadContactParent
     },
     {
@@ -46,11 +46,11 @@ module.exports = {
         },
         getCrmContactListByPage: async (obj, args, context, info) => {
             const response = await common.getCrmModelListByPage(args, model.Contact, [{
-                model: model.LeadContactParent
-            },
-            {
-                model: model.Company
-            }
+                    model: model.LeadContactParent
+                },
+                {
+                    model: model.Company
+                }
             ], 'Contacts');
             return response;
         },
@@ -74,22 +74,23 @@ module.exports = {
         },
 
         getCrmContactCampaigns: async (obj, args, context, info) => {
-            const response = await common.getCrmModelById(args.id, model.Contact, [
-                {
-                    model: model.Campaign,
-                    include: [{
-                        model: model.CampaignTypeMaster
-                    }]
-                }
-            ], 'Contact');
+            const response = await common.getCrmModelById(args.id, model.Contact, [{
+                model: model.Campaign,
+                include: [{
+                    model: model.CampaignTypeMaster
+                }]
+            }], 'Contact');
             return response;
 
         }, // end of getCrmContactCampaigns resolver
     },
     Mutation: {
         createCrmContact: async (obj, args, context, info) => {
+            const errors = contactValidation.validateInput(args.input);
+            if (errors.error) {
+                throw new Error(errors.error.details[0].message);
+            }
             args.input.created_by = context.user.id;
-
             const contactObj = await model.Contact.create(args.input, {
                 include: modelIncludes
             });
@@ -99,14 +100,18 @@ module.exports = {
             }
         },
         updateCrmContact: async (obj, args, context, info) => {
-            const contactId = args.input.id;
+            const errors = contactValidation.validateInput(args.input);
+            if (errors.error) {
+                throw new Error(errors.error.details[0].message);
+            }
             const Addresses = args.input.Addresses;
-            delete args.input.id;
             delete args.input.Addresses;
             const contactObj = await model.Contact.findOne({
-                include: modelIncludes,
+                include: [{
+                    model: model.LeadContactParent
+                }],
                 where: {
-                    id: contactId,
+                    id: args.id,
                     is_deleted: 0
                 }
             });
@@ -125,14 +130,12 @@ module.exports = {
                     contactObj[e] = args.input[e];
                 });
                 await Promise.all([contactObj.LeadContactParent.save(), contactObj.save()]);
-                contactObj.Addresses = await contactObj.getAddresses();
             } else {
                 throw new Error(constant.DOES_NOT_EXIST);
             }
             return {
-                Contact: contactObj,
                 message: constant.SUCCESS
-            }
+            };
         },
         deleteCrmContactById: async (obj, args, context, info) => {
             return await common.deleteModelById(args.id, model.Contact, context.user.id);

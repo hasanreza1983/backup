@@ -2,7 +2,7 @@ const Joi = require('joi');
 
 /********************************************** Starts: Validation schema  ***************************************************/
 // Schema to validate create & update activity event
-const schemaActivityEvent = Joi.object().keys({
+const schemaInput = Joi.object().keys({
     owner: Joi.number().required(),
     subject: Joi.string().min(1).max(255).required(),
     location: Joi.string().allow(null).optional(),
@@ -18,7 +18,12 @@ const schemaActivityEvent = Joi.object().keys({
     })),
 });
 
-// function to validate schema schemaActivityEvent
-module.exports = (input) => {
-    return Joi.validate(input, schemaActivityEvent, {abortEarly: true});
+// function to validate schema schemaInput
+const validateInput = (inputArguments) => {
+	return Joi.validate(inputArguments, schemaInput, {
+		abortEarly: true
+	});
+}
+module.exports = {
+	validateInput
 }

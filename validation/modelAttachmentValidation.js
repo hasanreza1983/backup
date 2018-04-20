@@ -1,46 +1,24 @@
 /*
-* This validation file is for type modelAttachmentAttachment resolver
-* Make Schema to validate modelAttachmentAttachment User Inputs
-* Hasan Reza 2018-03-28;
-*
-*/
+ * This validation file is for type modelAttachmentAttachment resolver
+ * Make Schema to validate modelAttachmentAttachment User Inputs
+ * Hasan Reza 2018-03-28;
+ *
+ */
 const Joi = require('joi');
 
-let schemaIDInput = Joi.object().keys({
-	id: Joi.number().required()
-});
-// function to validate schemaID
-const validateIDInput = (inputID) => {
-	return Joi.validate({ id: inputID }, schemaIDInput, {
-		abortEarly: true
-	});
-}
-let schemaCreateInput = Joi.object().keys({
-	model_name: Joi.string().valid('Lead', 'Contact', 'Company', 'Deal', 'Campaign'),
+const schemaInput = Joi.object().keys({
+	model_name: Joi.string().valid('Lead', 'Contact', 'Company', 'Deal', 'Campaign').required(),
 	model_id: Joi.number().integer().required(),
 	ModelAttachments: Joi.array().items(Joi.object().keys({
-		minio_file_id: Joi.string()
+		minio_file_id: Joi.string().required()
 	}))
 });
-// function to validate schemaCreate
-const validateCreateInput = (inputArguments) => {
-	return Joi.validate(inputArguments, schemaCreateInput, {
-		abortEarly: true
-	});
-}
-let schemaDeleteInput = Joi.object().keys({
-	id: Joi.number().integer().required(),
-	minio_file_id: Joi.string().required()
-});
-
-// function to validate schemaDelete
-const validateDeleteInput = (inputArguments) => {
-	return Joi.validate(inputArguments, schemaDeleteInput, {
+// function to validate schema
+const validateInput = (inputArguments) => {
+	return Joi.validate(inputArguments, schemaInput, {
 		abortEarly: true
 	});
 }
 module.exports = {
-	validateIDInput,
-	validateCreateInput,
-	validateDeleteInput
+	validateInput
 }

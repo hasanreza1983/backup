@@ -5,25 +5,17 @@
  */
 module.exports = `
 type PageInfo {
-    totalCounts: Int,
-    totalPages :Int,
-    currentPage: Int,
-    pageSize: Int,
-    sortField: String,
-    sortDirection: String,
-    filterField: String,
-    filterValue: String,
-    whereConditions: String
+    totalCounts: Int
+    totalPages :Int
+    currentPage: Int
+    pageSize: Int
+    sort: [String]
 }
 input PageInfoInput {
-    currentPage: Int = 1,
-    pageSize: Int = 10,
-    sortField: String = "created_at",
-    sortDirection: String = "DESC",
-    filterField: String = "",
-    filterValue: String = "" ,
-    whereConditions: String = ""
+    currentPage: Int = 1
+    pageSize: Int = 10
     filter: String
+    sort: [String] = ["created_at", "desc"]
 }
 type ModelOutput {
     model_id: Int
@@ -43,29 +35,5 @@ type CrmCommonListOutput {
 }
 type CrmDefaultOutput {
     message: String
-}
-type CrmDeleteListOutput {
-    id: [Int],
-    message: String
-}
-input CrmCampaignsAssignInput {
-    id: Int
-	model_name: String!
-    model_id: Int!
-    id_crm_campaign_status_master: Int!	
-    Campaigns: [Int!]!
-}
-
-input CrmCampaignAssignAlterInput {
-    id: Int!
-	model_name: String!
-    model_id: Int! 
-    id_crm_campaign_status_master: Int  
-}
-
-type Mutation {
-    assignCrmCampaignsToModel(input: CrmCampaignsAssignInput!): CrmDefaultOutput
-    unAssignCrmCampaignsToModel(input: CrmCampaignAssignAlterInput!): CrmDefaultOutput
-    updateCrmCampaignStatusForModel(input: CrmCampaignAssignAlterInput!): CrmDefaultOutput
 }
 `;

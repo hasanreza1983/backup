@@ -27,11 +27,10 @@ type CrmDeal {
 	OwnerList: [CrmOwner]	
 }
 input CrmDealInput {
-	id: Int
-	owner: Int
+	owner: Int!
 	id_crm_contact: Int
 	id_crm_company: Int
-	deal_name: String
+	deal_name: String!
 	deal_type: String
 	deal_closing_date: String
 	deal_amount: String
@@ -54,11 +53,10 @@ type CrmDealListOutput {
 type Query {
     getCrmDealById(id: Int!): CrmDealOutput
     getCrmDealListByPage(input: PageInfoInput): CrmDealListOutput
-	getAllCrmDeal(whereConditions:  String = "" ): CrmDealListOutput	
 }
 type Mutation {
     createCrmDeal(input: CrmDealInput!): CrmDealOutput
-    updateCrmDeal(input: CrmDealInput!): CrmDealOutput
+    updateCrmDeal(id: Int!, input: CrmDealInput!): CrmDefaultOutput
     deleteCrmDealById(id: [Int!]!): CrmDefaultOutput
 }
 `;

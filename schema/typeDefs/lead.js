@@ -38,9 +38,8 @@ type CrmLead {
 
 }
 input CrmLeadInput {
-	id: Int
-	owner: Int
-	company_name: String
+	owner: Int!
+	company_name: String!
 	id_crm_lead_status_master: Int
 	id_crm_rating_master: Int
 	no_of_employees: Int
@@ -54,7 +53,7 @@ input CrmLeadInput {
 	linkedin_url: String
 	facebook_url: String
 	id_crm_lead_contact_parent: Int
-	LeadContactParent: CrmLeadContactParentInput
+	LeadContactParent: CrmLeadContactParentInput!
 	Addresses: [CrmAddressInput]	
 }
 
@@ -69,6 +68,10 @@ type CrmLeadListOutput {
   message: String
 }
 
+input CrmDealConversionInput {
+	Deal:CrmDealInput
+}
+
 type Query {
     getCrmLeadById(id: Int!): CrmLeadOutput
 	getCrmLeadListByPage(input: PageInfoInput): CrmLeadListOutput   
@@ -77,8 +80,8 @@ type Query {
 
 type Mutation {
     createCrmLead(input: CrmLeadInput!): CrmLeadOutput
-    updateCrmLead(input: CrmLeadInput!): CrmLeadOutput
-	deleteCrmLeadById(id: [Int!]!): CrmDeleteListOutput	
-	convertCrmLeadById(id: Int!): CrmLeadOutput
+    updateCrmLead(id: Int!, input: CrmLeadInput!): CrmDefaultOutput
+	deleteCrmLeadById(id: [Int!]!): CrmDefaultOutput	
+	convertCrmLeadById(id: Int!, input: CrmDealConversionInput): CrmDefaultOutput
 }
 `;
